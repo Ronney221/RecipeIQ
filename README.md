@@ -20,7 +20,7 @@
 - **Backend Framework**: [Flask](https://flask.palletsprojects.com/)
 - **Database**: [MongoDB](https://www.mongodb.com/)
 - **External API**: [Spoonacular API](https://spoonacular.com/food-api)
-- **Hosting**: [Heroku](https://www.heroku.com/) or any cloud provider
+- **Hosting**: [Heroku](https://www.heroku.com/)
 
 ---
 
