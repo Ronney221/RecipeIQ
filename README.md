@@ -12,6 +12,8 @@
 - **Persistent Storage with MongoDB**: Recipes are cached in a **MongoDB** database to optimize subsequent queries, reducing API calls and improving performance.
 - **Spoonacular API Integration**: Real-time integration with the **Spoonacular API** ensures fresh and varied recipe suggestions.
 - **Heroku Web Hosting**: The chatbot is deployed on **Heroku**, making it easily accessible from anywhere. The web server handles requests, including webhook responses, ensuring real-time interactions between the user, Facebook Messenger, and Dialogflow.
+
+- **Try it out here!**: [RecipeIQ](https://bot.dialogflow.com/8523d699-a5ac-4c2d-87ae-e2402e888378) (There are 150 free Spoonacular API calls a day, so if you get [empty response] that means the quota has been reached for today)
 ---
 
 ## 🛠️ Tech Stack
