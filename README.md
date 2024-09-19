@@ -11,7 +11,7 @@
 - **Detailed Recipe Information**: For each recipe, the chatbot provides detailed information including preparation time, servings, ingredients, and cooking instructions.
 - **Persistent Storage with MongoDB**: Recipes are cached in a **MongoDB** database to optimize subsequent queries, reducing API calls and improving performance.
 - **Spoonacular API Integration**: Real-time integration with the **Spoonacular API** ensures fresh and varied recipe suggestions.
-
+- **Heroku Web Hosting**: The chatbot is deployed on **Heroku**, making it easily accessible from anywhere. The web server handles requests, including webhook responses, ensuring real-time interactions between the user, Facebook Messenger, and Dialogflow.
 ---
 
 ## 🛠️ Tech Stack
