@@ -10,10 +10,13 @@ app = Flask(__name__)
 # MongoDB Atlas connection string
 # Replace <username> and <password> with your actual MongoDB credentials
 #MONGO_URI = 'mongodb+srv://<username>:<password>@cluster0.mongodb.net/recipeDB?retryWrites=true&w=majority'
-MONGO_USER = os.getenv('MONGO_USER')
-MONGO_PW = os.getenv('MONGO_PW')
 
-MONGO_URI = 'mongodb+srv://{MONGO_USER}:{MONGO_PW}@recipe.grv0n.mongodb.net/recipeDB?retryWrites=true&w=majority'
+MONGO_URI = os.getenv("MONGO_URI")
+
+if not MONGO_URI:
+    raise ValueError("No MONGO_URI set for Flask application. Did you forget to set it?")
+
+print(MONGO_URI)
 
 # Connect to MongoDB Atlas
 client = pymongo.MongoClient(MONGO_URI)
@@ -23,7 +26,7 @@ recipes_collection = db['recipes'] #saved recipes on mongodb so we save an api c
 # Spoonacular API Key
 #SPOONACULAR_API_KEY = 'your_spoonacular_api_key'
 SPOONACULAR_API_KEY = os.getenv('SPOONACULAR_API_KEY')
-
+print(SPOONACULAR_API_KEY)
 @app.route('/webhook', methods=['POST'])
 def webhook():
     req = request.get_json(silent=True, force=True)
