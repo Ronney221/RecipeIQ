@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import pymongo
 import requests
+import os
 
 app = Flask(__name__)
 
@@ -8,7 +9,11 @@ app = Flask(__name__)
 
 # MongoDB Atlas connection string
 # Replace <username> and <password> with your actual MongoDB credentials
-MONGO_URI = 'mongodb+srv://<username>:<password>@cluster0.mongodb.net/recipeDB?retryWrites=true&w=majority'
+#MONGO_URI = 'mongodb+srv://<username>:<password>@cluster0.mongodb.net/recipeDB?retryWrites=true&w=majority'
+MONGO_USER = os.getenv('MONGO_USER')
+MONGO_PW = os.getenv('MONGO_PW')
+
+MONGO_URI = 'mongodb+srv://{MONGO_USER}:{MONGO_PW}@recipe.grv0n.mongodb.net/recipeDB?retryWrites=true&w=majority'
 
 # Connect to MongoDB Atlas
 client = pymongo.MongoClient(MONGO_URI)
@@ -16,7 +21,8 @@ db = client['recipeDB']
 recipes_collection = db['recipes'] #saved recipes on mongodb so we save an api call to spoonacular
 
 # Spoonacular API Key
-SPOONACULAR_API_KEY = 'your_spoonacular_api_key'
+#SPOONACULAR_API_KEY = 'your_spoonacular_api_key'
+SPOONACULAR_API_KEY = os.getenv('SPOONACULAR_API_KEY')
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
