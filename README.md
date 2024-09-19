@@ -151,3 +151,15 @@ Interested in collaborating or learning more about this project? Feel free to re
 ## 👏 Contributions
 
 Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/yourusername/recipe-finder-ai-chatbot/issues) or submit a pull request.
+
+---
+
+## Project Screenshots
+
+![avocados1](https://github.com/user-attachments/assets/fb54e197-b039-4f85-8a67-cda65b0afaf0)![avocados2](https://github.com/user-attachments/assets/b79cada3-3807-4fca-b414-e79b67db0bb3)![avocados3](https://github.com/user-attachments/assets/ad292f22-de02-4f8a-a7e0-442f9286d1ff)
+
+
+![breakfast1](https://github.com/user-attachments/assets/3e27b71c-e73a-4cb8-90f4-079c73428ffc)![breakfast2](https://github.com/user-attachments/assets/3ce51e6b-e654-4206-a480-38a1619221bc)![breakfast3](https://github.com/user-attachments/assets/c9056eaf-c641-40ed-b576-e32f5c73bf0f)
+
+
+
