@@ -85,11 +85,31 @@ def fetch_recipes_with_details(ingredients, meal_type):
     if response.status_code == 200:
         data = response.json()
         if data.get("results"):
-            # Store the recipes in MongoDB
             for recipe in data['results']:
-                recipe['ingredients'] = ingredients  # Add ingredients for MongoDB searchability
-                recipe['meal_type'] = meal_type
-                recipes_collection.insert_one(recipe)  # Store the recipe in MongoDB
+                recipe_details = fetch_detailed_recipe_info(recipe['id'])
+
+                if recipe_details:
+                    # Build the recipe document to store in MongoDB
+                    recipe_doc = {
+                        "title": recipe.get('title', 'No title available'),
+                        "image_url": recipe.get('image', ''),
+                        "recipe_id": recipe.get('id', 'No ID available'),
+                        "ingredients": [ingredient.get('original', '') for ingredient in recipe_details.get('extendedIngredients', [])],
+                        "instructions": recipe_details.get('instructions', 'No instructions available'),
+                        "meal_type": meal_type,
+                        "calories": next((item for item in recipe_details.get('nutrition', {}).get('nutrients', []) if item["title"] == "Calories"), {}).get('amount', 'N/A'),
+                        "protein": next((item for item in recipe_details.get('nutrition', {}).get('nutrients', []) if item["title"] == "Protein"), {}).get('amount', 'N/A'),
+                        "fat": next((item for item in recipe_details.get('nutrition', {}).get('nutrients', []) if item["title"] == "Fat"), {}).get('amount', 'N/A'),
+                        "carbs": next((item for item in recipe_details.get('nutrition', {}).get('nutrients', []) if item["title"] == "Carbohydrates"), {}).get('amount', 'N/A'),
+                        "cuisines": recipe_details.get('cuisines', []),
+                        "dish_types": recipe_details.get('dishTypes', []),
+                        "likes": recipe_details.get('aggregateLikes', 0),
+                        "health_score": recipe_details.get('healthScore', 'Not available'),
+                        "price_per_serving": recipe_details.get('pricePerServing', 0) / 100
+                    }
+
+                    # Insert the recipe into MongoDB
+                    recipes_collection.insert_one(recipe_doc)
 
             return data['results']
     else:
