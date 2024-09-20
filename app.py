@@ -96,7 +96,8 @@ def fetch_recipes_with_details(ingredients, meal_type):
                         "title": recipe.get('title', 'No title available'),
                         "image_url": recipe.get('image', ''),
                         "recipe_id": recipe.get('id', 'No ID available'),
-                        "ingredients": [ingredient.get('original', '') for ingredient in recipe_details.get('extendedIngredients', [])],
+                        "ingredients": ingredients,  # Store user-provided ingredients for MongoDB search
+                        "extendedIngredients": [ingredient.get('original', '') for ingredient in recipe_details.get('extendedIngredients', [])],
                         "instructions": recipe_details.get('instructions', 'No instructions available'),
                         "meal_type": meal_type,
                         "calories": next((item for item in recipe_details.get('nutrition', {}).get('nutrients', []) if item["title"] == "Calories"), {}).get('amount', 'N/A'),
