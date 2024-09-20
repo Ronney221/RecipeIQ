@@ -120,14 +120,18 @@ def fetch_recipes_with_details(ingredients, meal_type):
         return None
 
 def fetch_detailed_recipe_info(recipe_id):
+    if not recipe_id:
+        print("No valid recipe_id found.")
+        return None
+
     url = f"https://api.spoonacular.com/recipes/{recipe_id}/information?apiKey={SPOONACULAR_API_KEY}"
     response = requests.get(url)
 
     if response.status_code == 200:
         return response.json()
     else:
-        print("Failed to fetch recipe details")
-
+        print(f"Failed to fetch recipe details for recipe_id {recipe_id}, status code: {response.status_code}")
+        return None
 
 def format_recipe_details(recipes, ingredients):
     if not recipes:
@@ -160,6 +164,16 @@ def format_recipe_details(recipes, ingredients):
         image_url = recipe.get('image', '')
         recipe_id = recipe.get('id', 'No ID available')
         recipe_details = fetch_detailed_recipe_info(recipe_id)
+
+        if recipe_details is None:
+            # Skip this recipe if details cannot be fetched
+            fulfillment_messages.append({
+                "text": {
+                    "text": [f"Sorry, I couldn't fetch detailed information for {title}."]
+                }
+            })
+            continue
+
 
         servings = recipe_details.get('servings', 'N/A')
         ready_in_minutes = recipe_details.get('readyInMinutes', 'N/A')
@@ -240,7 +254,7 @@ def format_recipe_details(recipes, ingredients):
     return {"fulfillmentMessages": fulfillment_messages}
 
 # Function to format the detailed recipe information for multiple recipes
-def format_recipe_details2(recipes):
+'''def format_recipe_details2(recipes):
     if not recipes:
         return {
             "fulfillmentMessages": [
@@ -342,6 +356,7 @@ def format_recipe_details2(recipes):
 
     # Return the response with the rich content structure
     return {"fulfillmentMessages": [{"payload": {"richContent": [rich_response]}}]}
+'''
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
