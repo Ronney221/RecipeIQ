@@ -63,7 +63,7 @@ def fetch_recipes_with_details(ingredients, meal_type):
     # First, check MongoDB for existing recipes
     query = {
         "meal_type": {"$regex": meal_type, "$options": "i"},  # Case-insensitive meal_type
-        "ingredients": {"$all": [{"$regex": ingredient, "$options": "i"} for ingredient in ingredients]}  # Case-insensitive ingredients matching
+        "$and": [{"ingredients": {"$regex": ingredient, "$options": "i"}} for ingredient in ingredients]  # Case-insensitive ingredients matching
     }
 
     print("Querying MongoDB with: ", query)
