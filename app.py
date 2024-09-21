@@ -12,21 +12,20 @@ app = Flask(__name__)
 #MONGO_URI = 'mongodb+srv://<username>:<password>@cluster0.mongodb.net/recipeDB?retryWrites=true&w=majority'
 
 MONGO_URI = os.getenv("MONGO_URI")
+# Spoonacular API Key
+SPOONACULAR_API_KEY = os.getenv('SPOONACULAR_API_KEY')
+
 
 if not MONGO_URI:
     raise ValueError("No MONGO_URI set for Flask application. Did you forget to set it?")
 
-print(MONGO_URI)
 
 # Connect to MongoDB Atlas
 client = pymongo.MongoClient(MONGO_URI)
 db = client['recipeDB']
 recipes_collection = db['recipes'] #saved recipes on mongodb so we save an api call to spoonacular
 
-# Spoonacular API Key
-#SPOONACULAR_API_KEY = 'your_spoonacular_api_key'
-SPOONACULAR_API_KEY = os.getenv('SPOONACULAR_API_KEY')
-print(SPOONACULAR_API_KEY)
+
 @app.route('/webhook', methods=['POST'])
 def webhook():
     req = request.get_json(silent=True, force=True)
@@ -62,11 +61,10 @@ def webhook():
 def fetch_recipes_with_details(ingredients, meal_type):
     # First, check MongoDB for existing recipes
     query = {
-        "meal_type": {"$regex": meal_type, "$options": "i"},  # Case-insensitive meal_type
-        "$and": [{"ingredients": {"$regex": ingredient, "$options": "i"}} for ingredient in ingredients]  # Case-insensitive ingredients matching
+        "ingredients": {"$all": ingredients},  # Ensure all ingredients match
+        "meal_type": meal_type
     }
 
-    print("Querying MongoDB with: ", query)
     stored_recipes = list(recipes_collection.find(query))
 
     if stored_recipes:
@@ -87,32 +85,11 @@ def fetch_recipes_with_details(ingredients, meal_type):
     if response.status_code == 200:
         data = response.json()
         if data.get("results"):
+            # Store the recipes in MongoDB
             for recipe in data['results']:
-                recipe_details = fetch_detailed_recipe_info(recipe['id'])
-
-                if recipe_details:
-                    # Build the recipe document to store in MongoDB
-                    recipe_doc = {
-                        "title": recipe.get('title', 'No title available'),
-                        "image_url": recipe.get('image', ''),
-                        "recipe_id": recipe.get('id', 'No ID available'),
-                        "ingredients": ingredients,  # Store user-provided ingredients for MongoDB search
-                        "extendedIngredients": [ingredient.get('original', '') for ingredient in recipe_details.get('extendedIngredients', [])],
-                        "instructions": recipe_details.get('instructions', 'No instructions available'),
-                        "meal_type": meal_type,
-                        "calories": next((item for item in recipe_details.get('nutrition', {}).get('nutrients', []) if item["title"] == "Calories"), {}).get('amount', 'N/A'),
-                        "protein": next((item for item in recipe_details.get('nutrition', {}).get('nutrients', []) if item["title"] == "Protein"), {}).get('amount', 'N/A'),
-                        "fat": next((item for item in recipe_details.get('nutrition', {}).get('nutrients', []) if item["title"] == "Fat"), {}).get('amount', 'N/A'),
-                        "carbs": next((item for item in recipe_details.get('nutrition', {}).get('nutrients', []) if item["title"] == "Carbohydrates"), {}).get('amount', 'N/A'),
-                        "cuisines": recipe_details.get('cuisines', []),
-                        "dish_types": recipe_details.get('dishTypes', []),
-                        "likes": recipe_details.get('aggregateLikes', 0),
-                        "health_score": recipe_details.get('healthScore', 'Not available'),
-                        "price_per_serving": recipe_details.get('pricePerServing', 0) / 100
-                    }
-
-                    # Insert the recipe into MongoDB
-                    recipes_collection.insert_one(recipe_doc)
+                recipe['ingredients'] = ingredients  # Add ingredients for MongoDB searchability
+                recipe['meal_type'] = meal_type
+                recipes_collection.insert_one(recipe)  # Store the recipe in MongoDB
 
             return data['results']
     else:
