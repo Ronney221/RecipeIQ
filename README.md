@@ -153,7 +153,7 @@ Interested in collaborating or learning more about this project? Feel free to re
 
 ## 👏 Contributions
 
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/yourusername/recipe-finder-ai-chatbot/issues) or submit a pull request.
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/ronney221/recipeiq/issues) or submit a pull request.
 
 ---
 
